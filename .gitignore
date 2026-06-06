@@ -1,0 +1,18 @@
+# Python bytecode caching noise
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+
+# Local virtual environment variables directory
+intentflow_env/
+.env
+venv/
+env/
+
+# Mac OS specific operational files
+.DS_Store
+
+# Optional: Ignore massive raw training video dumps to save cloud space
+# data/raw/
