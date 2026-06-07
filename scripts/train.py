@@ -45,13 +45,19 @@ model.compile(
 
 model.summary()
 
+from tensorflow.keras.callbacks import EarlyStopping
+
 print("\nBeginning Model Optimization Epochs...")
+# Define early stopping to prevent overfitting on augmented data
+early_stop = EarlyStopping(monitor='val_loss', patience=5, restore_best_weights=True)
+
 # 4. Fit network parameters over the loaded tracking points
 history = model.fit(
     X_train, y_train,
     validation_data=(X_val, y_val),
-    epochs=15,
-    batch_size=2,
+    epochs=50,  # Increased epochs for more robust training
+    batch_size=4,
+    callbacks=[early_stop],
     verbose=1
 )
 

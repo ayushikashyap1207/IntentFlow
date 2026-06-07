@@ -9,8 +9,11 @@ from mediapipe.tasks.python import vision
 SEQUENCE_LENGTH = 30  # Fixed sequence window length expected by Phase 3 LSTM
 FEATURE_SIZE = 132    # 33 landmarks * 4 values (x, y, z, presence)
 
-# Locate the task asset safely at the project root
-TASK_PATH = os.path.expanduser("~/IntentFlow/pose_landmarker.task")
+import pathlib
+
+# Locate the task asset safely at the project root dynamically
+ROOT_DIR = str(pathlib.Path(__file__).parent.parent.parent.resolve())
+TASK_PATH = os.path.join(ROOT_DIR, "pose_landmarker.task")
 
 if not os.path.exists(TASK_PATH):
     raise FileNotFoundError(f"Critical Task Asset missing at: {TASK_PATH}. Please make sure pose_landmarker.task is in your root IntentFlow folder.")
@@ -69,3 +72,45 @@ def extract_video_sequence(video_path, seq_length=SEQUENCE_LENGTH):
         frames.append(np.zeros(FEATURE_SIZE))
         
     return np.array(frames[:seq_length])
+
+from mediapipe import solutions
+from mediapipe.framework.formats import landmark_pb2
+
+def draw_landmarks_on_image(rgb_image, detection_result):
+    pose_landmarks_list = detection_result.pose_landmarks
+    annotated_image = np.copy(rgb_image)
+
+    # Loop through the detected poses to visualize.
+    for idx in range(len(pose_landmarks_list)):
+        pose_landmarks = pose_landmarks_list[idx]
+
+        # Draw the pose landmarks.
+        pose_landmarks_proto = landmark_pb2.NormalizedLandmarkList()
+        pose_landmarks_proto.landmark.extend([
+            landmark_pb2.NormalizedLandmark(x=landmark.x, y=landmark.y, z=landmark.z) for landmark in pose_landmarks
+        ])
+        solutions.drawing_utils.draw_landmarks(
+            annotated_image,
+            pose_landmarks_proto,
+            solutions.pose.POSE_CONNECTIONS,
+            solutions.drawing_styles.get_default_pose_landmarks_style())
+    return annotated_image
+
+def process_live_frame(frame, landmarker):
+    """
+    Processes a single live frame, returning the annotated frame and the extracted feature vector.
+    """
+    # Convert BGR to RGB
+    image_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+    mp_image = mp.Image(image_format=mp.ImageFormat.SRGB, data=image_rgb)
+    
+    # Execute extraction
+    detection_result = landmarker.detect(mp_image)
+    
+    # Draw skeleton
+    annotated_frame = draw_landmarks_on_image(frame, detection_result)
+    
+    # Extract features
+    features = extract_keypoints(detection_result)
+    
+    return annotated_frame, features

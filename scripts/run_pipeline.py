@@ -16,7 +16,7 @@ SEQ_DIR = os.path.join(ROOT_DIR, "data/sequences")
 os.makedirs(SEQ_DIR, exist_ok=True)
 
 # The tracking behavior categories present in your raw workspace
-SELECTED_CLASSES = ["PushUps", "TaiChi","Squat_rehab","shoulder_Abduction"]
+SELECTED_CLASSES = ["PushUps", "TaiChi", "Squats_Rehab", "Shoulder_Abduction"]
 LABEL_MAP = {cls: idx for idx, cls in enumerate(SELECTED_CLASSES)}
 
 all_sequences = []
