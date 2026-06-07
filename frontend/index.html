@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IntentFlow Clinical Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app-container">
+        <header class="header">
+            <h1>🏥 IntentFlow — Live Orthopedic Assessment</h1>
+            <p>Real-time Automated Biomechanical Analysis and Rehabilitative Prescriptions.</p>
+        </header>
+
+        <main class="dashboard">
+            <section class="video-section glass-card">
+                <h2>🎥 Live Tracking Feed</h2>
+                <p class="subtitle">Ensure your full body is visible in the frame.</p>
+                
+                <div class="video-container">
+                    <!-- Hidden video element for capturing camera -->
+                    <video id="webcam" autoplay playsinline muted style="display: none;"></video>
+                    <!-- Hidden canvas for taking snapshots to send -->
+                    <canvas id="snapshot-canvas" style="display: none;"></canvas>
+                    
+                    <!-- Display canvas for showing the annotated frame from server -->
+                    <img id="output-feed" alt="Awaiting camera feed..." />
+                    
+                    <div class="controls">
+                        <button id="start-btn" class="btn primary">Start Tracking</button>
+                        <button id="stop-btn" class="btn secondary" disabled>Stop</button>
+                    </div>
+                </div>
+            </section>
+
+            <section class="report-section glass-card">
+                <h2>📋 Clinical Assessment Report</h2>
+                
+                <div id="report-content" class="report-content empty">
+                    <div class="empty-state">
+                        <div class="pulse-ring"></div>
+                        <p>Awaiting live sequence data. Step into the frame and perform your prescribed exercise for 1-2 seconds.</p>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
